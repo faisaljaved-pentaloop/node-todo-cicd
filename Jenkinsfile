@@ -1,27 +1,27 @@
-pipeline {
-    agent { label 'dev-agent' }
-    
-    stages{
-        stage('Code'){
+pipeline{
+    agent {label 'dev-agen-new'}
+    stages {
+        stage ('code') {
             steps {
-                git url: 'https://github.com/LondheShubham153/node-todo-cicd.git', branch: 'master'
+                git url: 'https://github.com/faisaljaved-pentaloop/node-todo-cicd.git' , branch: 'master'
             }
         }
-        stage('Build and Test'){
+        stage ('build and test') {
             steps {
-                sh 'docker build . -t trainwithshubham/node-todo-app-cicd:latest' 
+                sh 'docker build . -t faisaldevopsengg/node-todo-app-cicd:latest'
             }
         }
-        stage('Login and Push Image'){
+         stage ('login and push image') {
             steps {
-                echo 'logging in to docker hub and pushing image..'
-                withCredentials([usernamePassword(credentialsId:'dockerHub',passwordVariable:'dockerHubPassword', usernameVariable:'dockerHubUser')]) {
+                echo 'login and push image'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-id', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]){
                     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                    sh "docker push trainwithshubham/node-todo-app-cicd:latest"
+                    sh "docker push faisaldevopsengg/node-todo-app-cicd:latest"
                 }
+        
             }
         }
-        stage('Deploy'){
+        stage ('deploy') {
             steps {
                 sh 'docker-compose down && docker-compose up -d'
             }
